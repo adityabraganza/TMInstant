@@ -156,35 +156,20 @@ async fn main(){
             "check_all" => {
                 println!();
                 for email in &emails{
-                    let api_url = format!("https://www.1secmail.com/api/v1/?action=getMessages&login={id}&domain={domain}",
-                        id = email.get_id(),
-                        domain = email.get_domain()
-                    );
-
-                    println!("{}", email.get_email());
-
-                    let response = get_api_data(&api_url).await;
-
-                    match response{
-                        Ok(response) =>{
-                            let response_emails: Vec<EmailInfo> = response.json().await.expect("Should follow format of API");
-
-                            for response_email in &response_emails{
-                                println!("{}", response_email.to_string());
-                                println!();
-                            }
-                        },
-                        Err(err) => {
-                            println!("Error with the API for getting emails");
-                            print!("Error: ");
-                            println!("{}", err.to_string());
-                            println!();
-                        }
-                    }
+                    print_emails_from_id(email.copy()).await;
                 }
-            },//To Code
+            },
 
-            "check_email_id" => check_emails_from_id(),//To Code
+            "check_email_id" => {
+                if command.len() > 1{
+                    print_emails_from_id(Email::new_addr(command[1])).await;
+                } else{
+                    let mut response_print_emails_from_id = String::new();
+                    io::stdin().read_line(&mut response_print_emails_from_id).unwrap();
+                    response_print_emails_from_id = response_print_emails_from_id.trim().to_string();
+                    print_emails_from_id(Email::new_addr(&response_print_emails_from_id)).await;
+                }
+            },
 
             "check_email" => {
                 let mut email_id_to_check: u32 = 1;
@@ -309,7 +294,6 @@ email id would have been inputed");
 }
 
 fn check_emails(){println!("check_emails")}
-fn check_emails_from_id(){println!("check_emails_from_id")}
 fn save_email(){println!("save_email")}
 
 //API Functions
@@ -322,4 +306,32 @@ async fn get_api_data(url: &str) -> Result<Response, reqwest::Error> {
 
 fn clear_terminal(){
     println!("{esc}c", esc = 27 as char);
+}
+
+async fn print_emails_from_id(email: Email){
+    let api_url = format!("https://www.1secmail.com/api/v1/?action=getMessages&login={id}&domain={domain}",
+                        id = email.get_id(),
+                        domain = email.get_domain()
+                    );
+
+                    println!("{}", email.get_email());
+
+                    let response = get_api_data(&api_url).await;
+
+                    match response{
+                        Ok(response) =>{
+                            let response_emails: Vec<EmailInfo> = response.json().await.expect("Should follow format of API");
+
+                            for response_email in &response_emails{
+                                println!("{}", response_email.to_string());
+                                println!();
+                            }
+                        },
+                        Err(err) => {
+                            println!("Error with the API for getting emails");
+                            print!("Error: ");
+                            println!("{}", err.to_string());
+                            println!();
+                        }
+                    }
 }

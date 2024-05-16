@@ -18,6 +18,8 @@ impl Email{
     pub fn get_domain(&self) -> String {return self.domain.clone()}
 
     pub fn get_email(&self) -> String {return self.get_id() + "@" + &self.get_domain()}
+
+    pub fn copy(&self) -> Email {return Email{id: self.get_id(), domain: self.get_domain()}}
 }
 
 //I could have deleted this but im nice :) - A.C.
