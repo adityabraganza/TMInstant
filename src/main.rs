@@ -54,12 +54,21 @@ impl FullEmail{
     fn get_body(&self) -> String {return self.body.to_string();}
     fn get_textbody(&self) -> String {return self.textBody.to_string();}
     fn get_htmlbody(&self) -> String {return self.htmlBody.to_string();}
+    fn attachments_as_string(&self) -> String{
+        let mut return_string: String = "".to_string();
+        for attachment in &self.attachments{
+            return_string = return_string + &attachment.to_String() + "\n";
+        }
+
+        return return_string;
+    }
     fn to_string(&self) -> String {return 
         "id: ".to_string() + &self.get_id().to_string() + "\n" +
-        ", from: " + &self.get_from() + "\n" + 
-        ", date: " + &self.get_date() + "\n" + 
-        ", subject: " + &self.get_subject() + "\n" +
-        ", body: \n" + &self.get_textbody()
+        "from: " + &self.get_from() + "\n" + 
+        "date: " + &self.get_date() + "\n" + 
+        "subject: " + &self.get_subject() + "\n" +
+        "body: \n" + &self.get_textbody() + "\n" + 
+        "attachments: " +&self.attachments_as_string()
     }
 }
 
@@ -68,6 +77,17 @@ struct Attachment{
     filename: String,
     contentType: String,
     size: u32
+}
+
+impl Attachment{
+    fn get_filename(&self) -> String{return (&self.filename).to_string()}
+    fn get_contentType(&self) -> String{return (&self.contentType).to_string()}
+    fn get_size(&self) -> u32{return self.size}
+    fn to_String(&self) -> String{return
+        "filename: ".to_string() + &self.get_filename() + "\n" +
+        "content type: " + &self.get_contentType() + "\n" + 
+        "size: " + &self.get_size().to_string() + "\n"
+    }
 }
 
 #[tokio::main]
