@@ -56,7 +56,7 @@ impl FullEmail{
     fn get_htmlbody(&self) -> String {return self.htmlBody.to_string();}
     fn attachments_as_string(&self) -> String{
         let mut return_string: String = "".to_string();
-        for attachment in &self.attachments{
+        for attachment in self.get_attachments(){
             return_string = return_string + &attachment.to_String() + "\n";
         }
 
@@ -293,7 +293,6 @@ email id would have been inputed");
     println!();
 }
 
-fn check_emails(){println!("check_emails")}
 fn save_email(){println!("save_email")}
 
 //API Functions
